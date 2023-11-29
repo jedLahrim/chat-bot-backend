@@ -17,9 +17,11 @@ const openai = new OpenAIApi(configuration);
 router.get('', (req, res) => {
     res.json('HELLO FROM THE SERVER 🔴')
 })
-router.post("", async (request, response) => {
+router.get("/ask", async (request, response) => {
     const {message} = request.body;
-    if (!message) response.json({ERR: 'message property required', code: 400})
+    if (!message) {
+        return response.json({ERR: 'message property is required', code: 400})
+    }
     const result = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
