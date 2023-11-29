@@ -9,12 +9,15 @@ dotenv.config({path: '.env', debug: true})
 const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
+const router = express.Router()
 const configuration = new Configuration({
     apiKey: process.env.OPEN_AI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
-app.post("", async (request, response) => {
+router.get('', (req, res) => {
+    res.json('HELLO FROM THE SERVER 🔴')
+})
+router.post("", async (request, response) => {
     const {message} = request.body;
     if (!message) response.json({ERR: 'message property required', code: 400})
     const result = await openai.createChatCompletion({
@@ -27,11 +30,11 @@ app.post("", async (request, response) => {
         ],
     });
 
-    response.json({
-        output: result.data.choices[0].message,
-    });
+    response.json(
+        result.data.choices[0].message,
+    );
 });
-
+app.use(router)
 app.listen(port, () => {
     console.log(`listening on port ${port}`);
 });
